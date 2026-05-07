@@ -97,12 +97,12 @@ function initSimpleMeme() {
         window.currentDynamicUrl = pngUrl;
 
         generatedUrl.innerHTML = `
-            <div style="margin: 5px 0; padding: 10px; background: white; border-radius: 5px; border: 1px solid #ddd;">
+            <div style="margin: 5px 0; padding: 10px; background: #2a2a3e; border-radius: 5px; border: 1px solid #3a3a4e;">
                 <strong style="color: #667eea;">📸 Görsel URL:</strong><br>
-                <code style="word-break: break-all; font-size: 12px; color: #555;">${pngUrl}</code>
+                <code style="word-break: break-all; font-size: 12px; color: #e0e0e0;">${pngUrl}</code>
             </div>
-            <div style="margin-top: 10px; padding: 8px; background: #e3f2fd; border-radius: 3px; font-size: 12px;">
-                💡 <strong>İpucu:</strong> Gelişmiş meme oluşturmak için <a href="create-static-image.html" style="color: #667eea;">Meme Oluşturucu</a>'yu kullanın!
+            <div style="margin-top: 10px; padding: 8px; background: #1a1a2e; border-radius: 3px; font-size: 12px; border: 1px solid #3a3a4e;">
+                💡 <strong style="color: #a0a0b0;">İpucu:</strong> <span style="color: #b0b0c0;">Gelişmiş meme oluşturmak için <a href="create-static-image.html" style="color: #667eea;">Meme Oluşturucu</a>'yu kullanın!</span>
             </div>
         `;
     }
@@ -1115,12 +1115,14 @@ function initAdvancedMeme() {
                     const urlDisplay = document.getElementById('pngUrl');
                     if (urlDisplay) {
                         urlDisplay.innerHTML = `
-                            <div style="margin-bottom: 8px;">
-                                <strong style="color: #28a745;">✅ Imgur URL (Discord için hazır):</strong>
+                            <div style="padding: 12px; background: #2a2a3e; border-radius: 8px; border: 1px solid #3a3a4e;">
+                                <div style="margin-bottom: 8px;">
+                                    <strong style="color: #28a745;">✅ Imgur URL:</strong>
+                                </div>
+                                <a href="${imgurUrl}" target="_blank" style="color: #667eea; word-break: break-all; text-decoration: none;">
+                                    ${imgurUrl}
+                                </a>
                             </div>
-                            <a href="${imgurUrl}" target="_blank" style="color: #667eea; word-break: break-all;">
-                                ${imgurUrl}
-                            </a>
                         `;
                     }
                     
@@ -1177,12 +1179,14 @@ function initAdvancedMeme() {
                         const urlDisplay = document.getElementById('pngUrl');
                         if (urlDisplay) {
                             urlDisplay.innerHTML = `
-                                <div style="margin-bottom: 8px;">
-                                    <strong style="color: #28a745;">✅ Paylaşım Linki:</strong>
+                                <div style="padding: 12px; background: #2a2a3e; border-radius: 8px; border: 1px solid #3a3a4e;">
+                                    <div style="margin-bottom: 8px;">
+                                        <strong style="color: #28a745;">✅ Paylaşım Linki:</strong>
+                                    </div>
+                                    <a href="${imgurUrl}" target="_blank" style="color: #667eea; word-break: break-all; text-decoration: none;">
+                                        ${imgurUrl}
+                                    </a>
                                 </div>
-                                <a href="${imgurUrl}" target="_blank" style="color: #667eea; word-break: break-all;">
-                                    ${imgurUrl}
-                                </a>
                             `;
                         }
                         
