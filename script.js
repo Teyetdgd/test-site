@@ -338,7 +338,6 @@ function initAdvancedMeme() {
             
             const boxHtml = `
                 <div class="text-box ${isActive ? 'active' : ''}" onclick="setActiveTextBox(${box.id})" style="background: ${isActive ? '#3a3a4e' : '#2a2a3e'}; border: 2px solid ${isActive ? '#667eea' : '#3a3a4e'}; border-radius: 12px; padding: 12px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s ease;">
-                    <div style="position: absolute; top: 8px; right: 8px; font-size: 10px; color: #a0a0b0; background: #1a1a2e; padding: 4px 8px; border-radius: 6px;">X:${box.x} Y:${box.y}</div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div style="display: flex; align-items: center; gap: 8px; color: #e0e0e0; font-weight: 600; font-size: 14px;">
                             ${textIcon} Metin ${displayIndex}
