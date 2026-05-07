@@ -872,32 +872,81 @@ function initAdvancedMeme() {
         }
     }
 
-    // Copy URL to clipboard
+    // Copy URL to clipboard (Imgur'a yükleyip linki kopyalar)
     window.copyUrlToClipboard = async function () {
         try {
-            const pngUrl = document.getElementById('pngUrl').textContent;
-            if (pngUrl && pngUrl !== 'URL oluşturuluyor...') {
-                await navigator.clipboard.writeText(pngUrl);
-
-                // Buton animasyonu
-                const button = event.target;
-                const originalText = button.innerHTML;
-                button.innerHTML = '✅ Kopyalandı!';
-                button.style.background = '#28a745';
-
-                setTimeout(() => {
+            // Buton animasyonu başlat
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '⏳ Yükleniyor...';
+            button.disabled = true;
+            
+            updatePreview();
+            
+            showNotification('📤 Imgur\'a yükleniyor...', 'info');
+            
+            canvas.toBlob(async (blob) => {
+                try {
+                    const formData = new FormData();
+                    formData.append('image', blob);
+                    
+                    const response = await fetch('https://api.imgur.com/3/image', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Client-ID 546c25a59c58ad7'
+                        },
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        const imgurUrl = data.data.link;
+                        
+                        // URL'yi panoya kopyala
+                        await navigator.clipboard.writeText(imgurUrl);
+                        
+                        // Başarı bildirimi
+                        showNotification('✅ Imgur linki kopyalandı! Discord\'da kullanabilirsiniz.', 'success');
+                        
+                        // URL'yi göster
+                        const urlDisplay = document.getElementById('pngUrl');
+                        if (urlDisplay) {
+                            urlDisplay.innerHTML = `
+                                <div style="margin-bottom: 8px;">
+                                    <strong style="color: #28a745;">✅ Imgur URL (Discord için hazır):</strong>
+                                </div>
+                                <a href="${imgurUrl}" target="_blank" style="color: #667eea; word-break: break-all;">
+                                    ${imgurUrl}
+                                </a>
+                            `;
+                        }
+                        
+                        // Buton başarı durumu
+                        button.innerHTML = '✅ Kopyalandı!';
+                        button.style.background = '#28a745';
+                        button.disabled = false;
+                        
+                        setTimeout(() => {
+                            button.innerHTML = originalText;
+                            button.style.background = '';
+                        }, 3000);
+                        
+                    } else {
+                        throw new Error('Imgur upload başarısız');
+                    }
+                } catch (err) {
+                    console.error('Imgur upload hatası:', err);
+                    showNotification('❌ Imgur\'a yüklenemedi. Lütfen tekrar deneyin.', 'error');
+                    
                     button.innerHTML = originalText;
                     button.style.background = '';
-                }, 2000);
-
-                // Toast bildirimi
-                showNotification('✅ URL başarıyla kopyalandı!', 'success');
-            } else {
-                showNotification('⚠️ Henüz kopyalanacak URL yok!', 'warning');
-            }
+                    button.disabled = false;
+                }
+            }, 'image/png', 1.0);
+            
         } catch (err) {
             console.error('URL kopyalama hatası:', err);
-            showNotification('❌ URL kopyalanamadı! Tarayıcınız desteklemiyor olabilir.', 'error');
+            showNotification('❌ Bir hata oluştu. Lütfen tekrar deneyin.', 'error');
         }
     }
 
