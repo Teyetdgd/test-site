@@ -7,15 +7,30 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 20px;
             background: #f0f0f0;
+            overflow-x: hidden;
         }
         .container {
-            max-width: 600px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             padding: 20px;
             border-radius: 10px;
+        }
+        .preview {
+            margin: 20px 0;
+            text-align: center;
+            overflow: hidden;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
         }
         .form-group {
             margin: 15px 0;
@@ -41,14 +56,6 @@
         }
         button:hover {
             background: #5a6fd8;
-        }
-        .preview {
-            margin: 20px 0;
-            text-align: center;
-        }
-        canvas {
-            border: 1px solid #ddd;
-            border-radius: 5px;
         }
         .download-section {
             margin: 20px 0;
@@ -235,3 +242,12 @@
     </script>
 </body>
 </html>
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+        }

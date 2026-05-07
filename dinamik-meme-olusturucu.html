@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinamik Resim Oluşturucu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .preview {
+            margin: 20px 0;
+            text-align: center;
+            overflow: hidden;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .url-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dinamik Resim Oluşturucu</h1>
+        <p>URL parametresi ile resim üzerine metin yazdırın. Discord'da embed olarak görünür.</p>
+        
+        <div class="input-group">
+            <label for="textInput">Metin:</label>
+            <textarea id="textInput" placeholder="Yazmak istediğiniz metni girin..." rows="3"></textarea>
+        </div>
+        
+        <div class="input-group">
+            <label for="fontSizeInput">Font Boyutu:</label>
+            <input type="range" id="fontSizeInput" min="20" max="100" value="40">
+            <span id="fontSizeValue">40px</span>
+        </div>
+        
+        <div class="input-group">
+            <label for="colorInput">Metin Rengi:</label>
+            <input type="color" id="colorInput" value="#ffffff">
+        </div>
+        
+        <div class="preview">
+            <canvas id="canvas" width="800" height="400"></canvas>
+        </div>
+        
+        <div class="url-display">
+            <strong>Discord için URL:</strong><br>
+            <span id="generatedUrl"></span>
+            <br><br>
+            <strong>Discord Embed için özel araçlar:</strong><br>
+            <a href="create-static-image.html" style="color: #667eea; text-decoration: none; font-weight: bold; display: block; margin: 5px 0;">
+                🎯 Discord Embed Oluşturucu (ÖNERİLEN)
+            </a>
+            <a href="generate.html" style="color: #667eea; text-decoration: none; font-weight: bold; display: block; margin: 5px 0;">
+                📸 Statik Resim Oluşturucu
+            </a>
+            <a href="index.html" style="color: #667eea; text-decoration: none; font-weight: bold; display: block; margin: 5px 0;">
+                🏠 Ana Sayfa
+            </a>
+            <small>Bu araçlar Discord'da %100 çalışır</small>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

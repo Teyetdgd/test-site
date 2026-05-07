@@ -17,6 +17,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
         }
 
         .app-container {
@@ -25,7 +26,7 @@
             display: grid;
             grid-template-columns: 350px 1fr;
             gap: 20px;
-            height: calc(100vh - 40px);
+            min-height: calc(100vh - 40px);
         }
 
         .sidebar {
@@ -34,6 +35,7 @@
             border-radius: 20px;
             padding: 25px;
             overflow-y: auto;
+            overflow-x: hidden;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
@@ -45,6 +47,7 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
         .app-header {
@@ -193,13 +196,15 @@
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
+            overflow: hidden;
         }
 
         .canvas {
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             max-width: 100%;
-            max-height: 100%;
+            height: auto;
+            display: block;
         }
 
         .action-buttons {
@@ -394,7 +399,7 @@
             .app-container {
                 grid-template-columns: 1fr;
                 grid-template-rows: auto 1fr;
-                height: auto;
+                min-height: auto;
             }
 
             .sidebar {
@@ -404,6 +409,25 @@
             .main-content {
                 order: 1;
                 min-height: 500px;
+            }
+            
+            .canvas-container {
+                padding: 10px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .app-container {
+                gap: 10px;
+            }
+            
+            .sidebar,
+            .main-content {
+                padding: 15px;
             }
         }
     </style>
