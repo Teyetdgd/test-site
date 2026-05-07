@@ -824,6 +824,7 @@ function initAdvancedMeme() {
             if (pngUrl && pngUrl !== 'URL oluşturuluyor...') {
                 await navigator.clipboard.writeText(pngUrl);
 
+                // Buton animasyonu
                 const button = event.target;
                 const originalText = button.innerHTML;
                 button.innerHTML = '✅ Kopyalandı!';
@@ -834,14 +835,15 @@ function initAdvancedMeme() {
                     button.style.background = '';
                 }, 2000);
 
-                showNotification('✅ URL kopyalandı!', 'success');
+                // Toast bildirimi
+                showNotification('✅ URL başarıyla kopyalandı!', 'success');
             } else {
-                alert('Henüz kopyalanacak URL yok. Lütfen bir görsel oluşturun.');
+                showNotification('⚠️ Henüz kopyalanacak URL yok!', 'warning');
             }
         } catch (err) {
             console.error('URL kopyalama hatası:', err);
             const pngUrl = document.getElementById('pngUrl').textContent;
-            const result = prompt('Bu URL\'yi kopyalayın:', pngUrl);
+            const result = prompt('Bu URL\'yi manuel olarak kopyalayın:', pngUrl);
             if (result !== null) {
                 showNotification('📋 URL hazır, manuel olarak kopyalayın', 'info');
             }
@@ -864,27 +866,60 @@ function initAdvancedMeme() {
             warning: '#ffc107'
         };
 
+        const icons = {
+            success: '✅',
+            error: '❌',
+            info: 'ℹ️',
+            warning: '⚠️'
+        };
+
         notification.style.cssText = `
             position: fixed;
             top: 20px;
-            right: 20px;
+            right: -400px;
             background: ${colors[type] || colors.info};
             color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 500;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
             z-index: 10000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            animation: slideIn 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 280px;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        `;
+
+        notification.innerHTML = `
+            <span style="font-size: 20px;">${icons[type] || icons.info}</span>
+            <span>${message}</span>
         `;
 
         if (!document.querySelector('#notification-styles')) {
             const style = document.createElement('style');
             style.id = 'notification-styles';
             style.textContent = `
-                @keyframes slideIn {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
+                @keyframes slideInRight {
+                    from { 
+                        right: -400px;
+                        opacity: 0;
+                    }
+                    to { 
+                        right: 20px;
+                        opacity: 1;
+                    }
+                }
+                @keyframes slideOutRight {
+                    from { 
+                        right: 20px;
+                        opacity: 1;
+                    }
+                    to { 
+                        right: -400px;
+                        opacity: 0;
+                    }
                 }
             `;
             document.head.appendChild(style);
@@ -892,9 +927,15 @@ function initAdvancedMeme() {
 
         document.body.appendChild(notification);
 
+        // Slide in
         setTimeout(() => {
-            notification.style.animation = 'slideIn 0.3s ease reverse';
-            setTimeout(() => notification.remove(), 300);
+            notification.style.right = '20px';
+        }, 10);
+
+        // Slide out
+        setTimeout(() => {
+            notification.style.right = '-400px';
+            setTimeout(() => notification.remove(), 400);
         }, 3000);
     }
 
