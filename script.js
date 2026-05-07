@@ -842,11 +842,7 @@ function initAdvancedMeme() {
             }
         } catch (err) {
             console.error('URL kopyalama hatası:', err);
-            const pngUrl = document.getElementById('pngUrl').textContent;
-            const result = prompt('Bu URL\'yi manuel olarak kopyalayın:', pngUrl);
-            if (result !== null) {
-                showNotification('📋 URL hazır, manuel olarak kopyalayın', 'info');
-            }
+            showNotification('❌ URL kopyalanamadı! Tarayıcınız desteklemiyor olabilir.', 'error');
         }
     }
 
