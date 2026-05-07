@@ -220,6 +220,9 @@ function initAdvancedMeme() {
         // İlk metin kutusunu ekle
         addTextBox('Üst Metin', 400, 100);
         addTextBox('Alt Metin', 400, 300);
+        
+        // Canvas üzerinde drag & drop ve context menu
+        setupCanvasInteraction();
     }
 
     // Add new text box
@@ -382,6 +385,259 @@ function initAdvancedMeme() {
             renderTextBoxes();
             updatePreview();
         }
+    }
+
+    // Canvas üzerinde drag & drop ve context menu
+    function setupCanvasInteraction() {
+        let isDragging = false;
+        let draggedBoxId = null;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let longPressTimer = null;
+        let contextMenuVisible = false;
+
+        // Canvas'tan koordinat al
+        function getCanvasCoordinates(event) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            let clientX, clientY;
+            if (event.touches && event.touches.length > 0) {
+                clientX = event.touches[0].clientX;
+                clientY = event.touches[0].clientY;
+            } else {
+                clientX = event.clientX;
+                clientY = event.clientY;
+            }
+            
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
+
+        // Hangi metin kutusuna tıklandığını bul
+        function findTextBoxAtPosition(x, y) {
+            for (let i = textBoxes.length - 1; i >= 0; i--) {
+                const box = textBoxes[i];
+                if (!box.visible) continue;
+                
+                const textWidth = ctx.measureText(box.text).width;
+                const textHeight = box.fontSize;
+                const padding = 20;
+                
+                if (x >= box.x - textWidth / 2 - padding &&
+                    x <= box.x + textWidth / 2 + padding &&
+                    y >= box.y - textHeight / 2 - padding &&
+                    y <= box.y + textHeight / 2 + padding) {
+                    return box.id;
+                }
+            }
+            return null;
+        }
+
+        // Context menu oluştur
+        function createContextMenu(x, y, boxId) {
+            removeContextMenu();
+            
+            const menu = document.createElement('div');
+            menu.id = 'canvas-context-menu';
+            menu.style.cssText = `
+                position: fixed;
+                left: ${x}px;
+                top: ${y}px;
+                background: white;
+                border: 2px solid #667eea;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                z-index: 10001;
+                min-width: 150px;
+                overflow: hidden;
+            `;
+            
+            const options = [
+                { icon: '✏️', text: 'Düzenle', action: () => setActiveTextBox(boxId) },
+                { icon: '🗑️', text: 'Sil', action: () => removeTextBox(boxId) },
+                { icon: '👁️', text: 'Gizle/Göster', action: () => toggleTextBoxVisibility(boxId) }
+            ];
+            
+            options.forEach(option => {
+                const item = document.createElement('div');
+                item.style.cssText = `
+                    padding: 12px 16px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    transition: background 0.2s;
+                    font-size: 14px;
+                `;
+                item.innerHTML = `<span>${option.icon}</span><span>${option.text}</span>`;
+                
+                item.addEventListener('mouseenter', () => {
+                    item.style.background = '#f0f0f0';
+                });
+                item.addEventListener('mouseleave', () => {
+                    item.style.background = 'white';
+                });
+                item.addEventListener('click', () => {
+                    option.action();
+                    removeContextMenu();
+                });
+                
+                menu.appendChild(item);
+            });
+            
+            document.body.appendChild(menu);
+            contextMenuVisible = true;
+            
+            // Dışarı tıklanınca kapat
+            setTimeout(() => {
+                document.addEventListener('click', removeContextMenu, { once: true });
+            }, 100);
+        }
+
+        function removeContextMenu() {
+            const menu = document.getElementById('canvas-context-menu');
+            if (menu) {
+                menu.remove();
+                contextMenuVisible = false;
+            }
+        }
+
+        // Mouse down - Drag başlat
+        canvas.addEventListener('mousedown', (e) => {
+            if (contextMenuVisible) {
+                removeContextMenu();
+                return;
+            }
+            
+            const coords = getCanvasCoordinates(e);
+            const boxId = findTextBoxAtPosition(coords.x, coords.y);
+            
+            if (boxId !== null) {
+                isDragging = true;
+                draggedBoxId = boxId;
+                const box = textBoxes.find(b => b.id === boxId);
+                dragStartX = coords.x - box.x;
+                dragStartY = coords.y - box.y;
+                canvas.style.cursor = 'grabbing';
+                setActiveTextBox(boxId);
+            }
+        });
+
+        // Mouse move - Drag
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging && draggedBoxId !== null) {
+                const coords = getCanvasCoordinates(e);
+                const box = textBoxes.find(b => b.id === draggedBoxId);
+                
+                if (box) {
+                    box.x = Math.max(0, Math.min(canvas.width, coords.x - dragStartX));
+                    box.y = Math.max(0, Math.min(canvas.height, coords.y - dragStartY));
+                    
+                    textX.value = Math.round(box.x);
+                    textY.value = Math.round(box.y);
+                    updatePositionValues();
+                    renderTextBoxes();
+                    updatePreview();
+                }
+            } else {
+                const coords = getCanvasCoordinates(e);
+                const boxId = findTextBoxAtPosition(coords.x, coords.y);
+                canvas.style.cursor = boxId !== null ? 'grab' : 'default';
+            }
+        });
+
+        // Mouse up - Drag bitir
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            draggedBoxId = null;
+            canvas.style.cursor = 'default';
+        });
+
+        // Context menu (sağ tık)
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const coords = getCanvasCoordinates(e);
+            const boxId = findTextBoxAtPosition(coords.x, coords.y);
+            
+            if (boxId !== null) {
+                createContextMenu(e.clientX, e.clientY, boxId);
+            }
+        });
+
+        // Touch events (mobil)
+        canvas.addEventListener('touchstart', (e) => {
+            if (contextMenuVisible) {
+                removeContextMenu();
+                return;
+            }
+            
+            const coords = getCanvasCoordinates(e);
+            const boxId = findTextBoxAtPosition(coords.x, coords.y);
+            
+            if (boxId !== null) {
+                // Uzun basma için timer başlat
+                longPressTimer = setTimeout(() => {
+                    const touch = e.touches[0];
+                    createContextMenu(touch.clientX, touch.clientY, boxId);
+                    navigator.vibrate && navigator.vibrate(50); // Haptic feedback
+                }, 500);
+                
+                // Drag başlat
+                isDragging = true;
+                draggedBoxId = boxId;
+                const box = textBoxes.find(b => b.id === boxId);
+                dragStartX = coords.x - box.x;
+                dragStartY = coords.y - box.y;
+                setActiveTextBox(boxId);
+            }
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            // Uzun basma iptal
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            
+            if (isDragging && draggedBoxId !== null) {
+                e.preventDefault();
+                const coords = getCanvasCoordinates(e);
+                const box = textBoxes.find(b => b.id === draggedBoxId);
+                
+                if (box) {
+                    box.x = Math.max(0, Math.min(canvas.width, coords.x - dragStartX));
+                    box.y = Math.max(0, Math.min(canvas.height, coords.y - dragStartY));
+                    
+                    textX.value = Math.round(box.x);
+                    textY.value = Math.round(box.y);
+                    updatePositionValues();
+                    renderTextBoxes();
+                    updatePreview();
+                }
+            }
+        });
+
+        canvas.addEventListener('touchend', () => {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            isDragging = false;
+            draggedBoxId = null;
+        });
+
+        canvas.addEventListener('touchcancel', () => {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+            isDragging = false;
+            draggedBoxId = null;
+        });
     }
 
     // Load meme templates
