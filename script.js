@@ -330,21 +330,29 @@ function initAdvancedMeme() {
         textBoxes.forEach((box, index) => {
             const isActive = box.id === activeTextBoxId;
             const displayIndex = index + 1;
+            const eyeIcon = box.visible ? 
+                '<img src="public/assets/svg/eye.svg" width="16" height="16" style="filter: brightness(0) invert(1);">' : 
+                '<img src="public/assets/svg/eye-off.svg" width="16" height="16" style="filter: brightness(0) invert(1);">';
+            const trashIcon = '<img src="public/assets/svg/trash.svg" width="16" height="16" style="filter: brightness(0) invert(1);">';
+            const textIcon = '<img src="public/assets/svg/text.svg" width="16" height="16" style="filter: brightness(0) invert(1);">';
+            
             const boxHtml = `
-                <div class="text-box ${isActive ? 'active' : ''}" onclick="setActiveTextBox(${box.id})">
-                    <div class="position-preview">X:${box.x} Y:${box.y}</div>
-                    <div class="text-box-header">
-                        <div class="text-box-title">📝 Metin ${displayIndex}</div>
-                        <div class="text-box-controls">
-                            <button class="btn-mini btn-info" onclick="event.stopPropagation(); toggleTextBoxVisibility(${box.id})" title="Görünürlük">
-                                ${box.visible ? '👁️' : '🙈'}
+                <div class="text-box ${isActive ? 'active' : ''}" onclick="setActiveTextBox(${box.id})" style="background: ${isActive ? '#3a3a4e' : '#2a2a3e'}; border: 2px solid ${isActive ? '#667eea' : '#3a3a4e'}; border-radius: 12px; padding: 12px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s ease;">
+                    <div style="position: absolute; top: 8px; right: 8px; font-size: 10px; color: #a0a0b0; background: #1a1a2e; padding: 4px 8px; border-radius: 6px;">X:${box.x} Y:${box.y}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div style="display: flex; align-items: center; gap: 8px; color: #e0e0e0; font-weight: 600; font-size: 14px;">
+                            ${textIcon} Metin ${displayIndex}
+                        </div>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn-mini" onclick="event.stopPropagation(); toggleTextBoxVisibility(${box.id})" title="Görünürlük" style="background: #4a4a5e; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                                ${eyeIcon}
                             </button>
-                            <button class="btn-mini btn-danger" onclick="event.stopPropagation(); removeTextBox(${box.id})" title="Sil">
-                                🗑️
+                            <button class="btn-mini" onclick="event.stopPropagation(); removeTextBox(${box.id})" title="Sil" style="background: #dc3545; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                                ${trashIcon}
                             </button>
                         </div>
                     </div>
-                    <div class="text-box-content">
+                    <div>
                         <textarea 
                             class="form-textarea" 
                             rows="2" 
@@ -352,14 +360,11 @@ function initAdvancedMeme() {
                             onchange="updateTextBoxText(${box.id}, this.value)"
                             oninput="updateTextBoxText(${box.id}, this.value)"
                             onclick="event.stopPropagation()"
+                            style="width: 100%; background: #1a1a2e; border: 1px solid #3a3a4e; color: #e0e0e0; padding: 8px; border-radius: 8px; font-size: 13px; resize: vertical;"
                         >${box.text}</textarea>
-                        <div class="form-row">
-                            <div>
-                                <label class="form-label" style="font-size: 11px;">Font: ${box.font}</label>
-                            </div>
-                            <div>
-                                <label class="form-label" style="font-size: 11px;">Boyut: ${box.fontSize}px</label>
-                            </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: #a0a0b0;">
+                            <div>Font: ${box.font}</div>
+                            <div>Boyut: ${box.fontSize}px</div>
                         </div>
                     </div>
                 </div>
@@ -447,19 +452,23 @@ function initAdvancedMeme() {
                 position: fixed;
                 left: ${x}px;
                 top: ${y}px;
-                background: white;
+                background: #2a2a3e;
                 border: 2px solid #667eea;
                 border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.4);
                 z-index: 10001;
                 min-width: 150px;
                 overflow: hidden;
             `;
             
+            const editIcon = '<img src="public/assets/svg/edit.svg" width="16" height="16" style="filter: brightness(0) invert(1);">';
+            const trashIcon = '<img src="public/assets/svg/trash.svg" width="16" height="16" style="filter: brightness(0) invert(1);">';
+            const eyeIcon = '<img src="public/assets/svg/eye.svg" width="16" height="16" style="filter: brightness(0) invert(1);">';
+            
             const options = [
-                { icon: '✏️', text: 'Düzenle', action: () => setActiveTextBox(boxId) },
-                { icon: '🗑️', text: 'Sil', action: () => removeTextBox(boxId) },
-                { icon: '👁️', text: 'Gizle/Göster', action: () => toggleTextBoxVisibility(boxId) }
+                { icon: editIcon, text: 'Düzenle', action: () => setActiveTextBox(boxId) },
+                { icon: trashIcon, text: 'Sil', action: () => removeTextBox(boxId) },
+                { icon: eyeIcon, text: 'Gizle/Göster', action: () => toggleTextBoxVisibility(boxId) }
             ];
             
             options.forEach(option => {
@@ -472,14 +481,15 @@ function initAdvancedMeme() {
                     gap: 10px;
                     transition: background 0.2s;
                     font-size: 14px;
+                    color: #e0e0e0;
                 `;
                 item.innerHTML = `<span>${option.icon}</span><span>${option.text}</span>`;
                 
                 item.addEventListener('mouseenter', () => {
-                    item.style.background = '#f0f0f0';
+                    item.style.background = '#3a3a4e';
                 });
                 item.addEventListener('mouseleave', () => {
-                    item.style.background = 'white';
+                    item.style.background = 'transparent';
                 });
                 item.addEventListener('click', () => {
                     option.action();
