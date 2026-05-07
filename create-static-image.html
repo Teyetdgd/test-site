@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎨 Meme Oluşturucu</title>
+    <title>Meme Oluşturucu</title>
     <style>
         * {
             margin: 0;
@@ -499,7 +499,7 @@
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="app-header">
-                <h1 class="app-title">🎨 Meme Oluşturucu</h1>
+                <h1 class="app-title">Meme Oluşturucu</h1>
                 <p class="app-subtitle">Profesyonel meme'ler oluşturun ve paylaşın</p>
             </div>
 
@@ -520,7 +520,19 @@
                         <input type="text" class="form-input" id="memeSearch"
                             placeholder="Imgflip'ten popüler meme'ler..." readonly onclick="toggleMemeDropdown()">
                         <div class="meme-dropdown" id="memeDropdown">
-                            <div class="loading" id="memeLoading">🔄 Popüler meme'ler yükleniyor...</div>
+                            <div class="loading" id="memeLoading">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 5px;">
+                                    <line x1="12" y1="2" x2="12" y2="6"/>
+                                    <line x1="12" y1="18" x2="12" y2="22"/>
+                                    <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
+                                    <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+                                    <line x1="2" y1="12" x2="6" y2="12"/>
+                                    <line x1="18" y1="12" x2="22" y2="12"/>
+                                    <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/>
+                                    <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+                                </svg>
+                                Popüler meme'ler yükleniyor...
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -531,7 +543,12 @@
                         <input type="text" class="form-input" id="githubImageSearch"
                             placeholder="Repo'nuzdaki resimler..." readonly onclick="toggleGithubDropdown()">
                         <div class="meme-dropdown" id="githubDropdown">
-                            <div class="loading" id="githubLoading">📂 GitHub images/ klasörü taranıyor...</div>
+                            <div class="loading" id="githubLoading">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 5px;">
+                                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                GitHub images/ klasörü taranıyor...
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -559,7 +576,11 @@
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <label class="form-label" style="margin: 0;">Metin Kutuları</label>
                         <button class="btn btn-secondary btn-small" onclick="addTextBox()" style="padding: 6px 12px;">
-                            ➕ Metin Ekle
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Metin Ekle
                         </button>
                     </div>
                     <div id="textBoxes">
@@ -665,9 +686,28 @@
                 </div>
 
                 <div class="btn-grid">
-                    <button class="btn btn-secondary btn-small" onclick="setTextPosition('top')">⬆️ Üst</button>
-                    <button class="btn btn-secondary btn-small" onclick="setTextPosition('center')">🎯 Orta</button>
-                    <button class="btn btn-secondary btn-small" onclick="setTextPosition('bottom')">⬇️ Alt</button>
+                    <button class="btn btn-secondary btn-small" onclick="setTextPosition('top')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;">
+                            <line x1="12" y1="19" x2="12" y2="5"/>
+                            <polyline points="5 12 12 5 19 12"/>
+                        </svg>
+                        Üst
+                    </button>
+                    <button class="btn btn-secondary btn-small" onclick="setTextPosition('center')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;">
+                            <circle cx="12" cy="12" r="10"/>
+                            <circle cx="12" cy="12" r="6"/>
+                            <circle cx="12" cy="12" r="2"/>
+                        </svg>
+                        Orta
+                    </button>
+                    <button class="btn btn-secondary btn-small" onclick="setTextPosition('bottom')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <polyline points="19 12 12 19 5 12"/>
+                        </svg>
+                        Alt
+                    </button>
                 </div>
             </div>
         </div>
@@ -682,23 +722,36 @@
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <button class="btn btn-primary" onclick="downloadImage()">
-                    📥 Görseli İndir
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Görseli İndir
                 </button>
                 <button class="btn btn-primary" onclick="copyUrlToClipboard()">
-                    📋 Paylaşım Linki Kopyala
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                    </svg>
+                    Paylaşım Linki Kopyala
                 </button>
             </div>
 
             <!-- Paylaşım Bilgilendirme -->
-            <div style="margin: 20px 0; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white;">
+            <div style="margin: 20px 0; padding: 15px; background: #252538; border-radius: 12px; color: white; border: 1px solid rgba(255, 255, 255, 0.1);">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                    <span style="font-size: 24px;">💡</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="stroke: #5865f2;">
+                        <path d="M9 18h6"/>
+                        <path d="M10 22h4"/>
+                        <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+                    </svg>
                     <strong style="font-size: 16px;">Nasıl Paylaşılır?</strong>
                 </div>
                 <div style="font-size: 13px; line-height: 1.6; opacity: 0.95;">
-                    <strong>Yöntem 1 (ÖNERİLEN):</strong> "📋 Paylaşım Linki Kopyala" butonuna tıklayın. Resim otomatik olarak yüklenir ve paylaşıma hazır link kopyalanır!<br>
-                    <strong>Yöntem 2:</strong> "📥 Görseli İndir" butonuna tıklayın ve istediğiniz platforma yükleyin.<br>
-                    <strong>✨ Avantaj:</strong> Link tüm platformlarda (Discord, Twitter, WhatsApp vb.) otomatik görünür.
+                    <strong>Yöntem 1 (ÖNERİLEN):</strong> "Paylaşım Linki Kopyala" butonuna tıklayın. Resim otomatik olarak yüklenir ve paylaşıma hazır link kopyalanır!<br>
+                    <strong>Yöntem 2:</strong> "Görseli İndir" butonuna tıklayın ve istediğiniz platforma yükleyin.<br>
+                    <strong>Avantaj:</strong> Link tüm platformlarda (Discord, Twitter, WhatsApp vb.) otomatik görünür.
                 </div>
             </div>
 
