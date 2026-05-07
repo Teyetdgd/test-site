@@ -681,7 +681,7 @@ function initAdvancedMeme() {
     // Render meme dropdown
     function renderMemeDropdown() {
         let html = `
-            <div style="padding: 12px; background: #f8f9fa; border-bottom: 1px solid #e1e5e9; font-weight: 600; color: #333;">
+            <div style="padding: 12px; background: #1a1a2e; border-bottom: 1px solid #3a3a4e; font-weight: 600; color: #e0e0e0;">
                 🔥 Popüler Meme Template'leri (${memeTemplates.length} adet)
             </div>
             <div class="meme-option" onclick="selectMeme(null)">
@@ -837,7 +837,7 @@ function initAdvancedMeme() {
             html = '<div class="loading">📂 contents/images/ klasöründe resim bulunamadı</div>';
         } else {
             html += `
-                <div style="padding: 12px; background: #f8f9fa; border-bottom: 1px solid #e1e5e9; font-weight: 600; color: #333;">
+                <div style="padding: 12px; background: #1a1a2e; border-bottom: 1px solid #3a3a4e; font-weight: 600; color: #e0e0e0;">
                     📁 Repo Resimleri (${githubImages.length} dosya)
                 </div>
             `;
@@ -873,6 +873,12 @@ function initAdvancedMeme() {
             selectedMeme = null;
             backgroundImage = null;
             memeSearch.value = 'Gradient Arka Plan';
+            
+            // Varsayılan canvas boyutuna dön
+            canvas.width = 800;
+            canvas.height = 400;
+            textX.max = 800;
+            textY.max = 400;
         } else {
             const meme = memeTemplates.find(m => m.id === memeId);
             if (meme) {
@@ -900,11 +906,52 @@ function initAdvancedMeme() {
         img.crossOrigin = 'anonymous';
         img.onload = function () {
             backgroundImage = img;
+            
+            // Canvas boyutunu resmin boyutuna göre ayarla
+            const maxWidth = 1200;
+            const maxHeight = 800;
+            let newWidth = img.width;
+            let newHeight = img.height;
+            
+            // Maksimum boyutları aşıyorsa orantılı küçült
+            if (newWidth > maxWidth || newHeight > maxHeight) {
+                const ratio = Math.min(maxWidth / newWidth, maxHeight / newHeight);
+                newWidth = Math.floor(newWidth * ratio);
+                newHeight = Math.floor(newHeight * ratio);
+            }
+            
+            // Canvas boyutunu güncelle
+            canvas.width = newWidth;
+            canvas.height = newHeight;
+            
+            // Metin pozisyonlarını yeni boyuta göre ayarla
+            textBoxes.forEach(box => {
+                // Eski canvas boyutuna göre yüzdelik pozisyon hesapla
+                const xPercent = box.x / 800;
+                const yPercent = box.y / 400;
+                
+                // Yeni canvas boyutuna göre pozisyonu ayarla
+                box.x = Math.floor(newWidth * xPercent);
+                box.y = Math.floor(newHeight * yPercent);
+            });
+            
+            // Slider'ların max değerlerini güncelle
+            textX.max = newWidth;
+            textY.max = newHeight;
+            
             updatePreview();
+            renderTextBoxes();
         };
         img.onerror = function () {
-            alert('❌ Resim yüklenemedi: ' + url);
+            showNotification('❌ Resim yüklenemedi: ' + url, 'error');
             backgroundImage = null;
+            
+            // Varsayılan boyuta dön
+            canvas.width = 800;
+            canvas.height = 400;
+            textX.max = 800;
+            textY.max = 400;
+            
             updatePreview();
         };
         img.src = url;
