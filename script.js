@@ -906,14 +906,14 @@ function initAdvancedMeme() {
                         await navigator.clipboard.writeText(imgurUrl);
                         
                         // Başarı bildirimi
-                        showNotification('✅ Imgur linki kopyalandı! Discord\'da kullanabilirsiniz.', 'success');
+                        showNotification('✅ Paylaşım linki kopyalandı!', 'success');
                         
                         // URL'yi göster
                         const urlDisplay = document.getElementById('pngUrl');
                         if (urlDisplay) {
                             urlDisplay.innerHTML = `
                                 <div style="margin-bottom: 8px;">
-                                    <strong style="color: #28a745;">✅ Imgur URL (Discord için hazır):</strong>
+                                    <strong style="color: #28a745;">✅ Paylaşım Linki:</strong>
                                 </div>
                                 <a href="${imgurUrl}" target="_blank" style="color: #667eea; word-break: break-all;">
                                     ${imgurUrl}
