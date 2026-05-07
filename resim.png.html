@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Dinamik Resim</title>
+
+    <!-- Discord/Social Media Meta Tags - Statik resim URL'si -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Dinamik Resim Oluşturucu">
+    <meta property="og:title" id="og-title" content="Dinamik Resim">
+    <meta property="og:description" id="og-description" content="Özel metin ile oluşturulmuş resim">
+    <meta property="og:image" id="og-image" content="">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="800">
+    <meta property="og:image:height" content="400">
+    <meta property="og:image:alt" id="og-image-alt" content="Dinamik oluşturulmuş resim">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitter-title" content="Dinamik Resim">
+    <meta name="twitter:description" id="twitter-description" content="Özel metin ile oluşturulmuş resim">
+    <meta name="twitter:image" id="twitter-image" content="">
+    <meta name="twitter:image:alt" id="twitter-image-alt" content="Dinamik oluşturulmuş resim">
+
+    <!-- Discord özel meta tag'lar -->
+    <meta name="theme-color" content="#667eea">
+    <meta property="og:url" id="og-url" content="">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+        }
+
+        canvas {
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="loading" id="loading">Resim yükleniyor...</div>
+    <canvas id="canvas" width="800" height="400" style="display: none;"></canvas>
+
+    <script>
+        // URL parametrelerini al
+        const urlParams = new URLSearchParams(window.location.search);
+        const text = decodeURIComponent(urlParams.get('text'));
+        const fontSize = parseInt(urlParams.get('size') || '40');
+        const color = decodeURIComponent(urlParams.get('color') || '#ffffff');
+
+        // Canvas ve context
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const loading = document.getElementById('loading');
+
+        // Mevcut resim.png dosyasını yüklemeye çalış
+        const baseImage = new Image();
+        baseImage.crossOrigin = 'anonymous';
+
+        function drawImageWithText(backgroundImg = null) {
+            // Canvas'ı temizle
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (backgroundImg) {
+                // Mevcut resmi arka plan olarak çiz
+                ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
+
+                // Yarı şeffaf overlay ekle
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            } else {
+                // Gradient arka plan (resim yoksa)
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, '#667eea');
+                gradient.addColorStop(1, '#764ba2');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // Metin ayarları
+            ctx.font = `bold ${fontSize}px Arial`;
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+            ctx.shadowBlur = 6;
+            ctx.shadowOffsetX = 3;
+            ctx.shadowOffsetY = 3;
+
+            // Metni çiz (çok satırlı destek)
+            const lines = text.split('\n');
+            const lineHeight = fontSize * 1.2;
+            const startY = canvas.height / 2 - ((lines.length - 1) * lineHeight) / 2;
+
+            lines.forEach((line, index) => {
+                ctx.fillText(line, canvas.width / 2, startY + (index * lineHeight));
+            });
+
+            // Loading'i gizle, canvas'ı göster
+            loading.style.display = 'none';
+            canvas.style.display = 'block';
+        }
+
+        function updateMetaTags() {
+            // Resmi PNG olarak al
+            const imageDataUrl = canvas.toDataURL('image/png', 1.0);
+            const currentUrl = window.location.href;
+            const shortText = text.substring(0, 50) + (text.length > 50 ? '...' : '');
+            const description = `"${shortText}" metni ile oluşturulmuş dinamik resim`;
+
+            // Statik resim URL'si oluştur
+            const baseUrl = window.location.origin + window.location.pathname.replace('.html', '');
+
+            // Title güncelle
+            document.title = shortText;
+            document.getElementById('page-title').textContent = shortText;
+
+            // Open Graph meta tag'ları güncelle - Statik URL kullan
+            document.getElementById('og-title').setAttribute('content', shortText);
+            document.getElementById('og-description').setAttribute('content', description);
+            document.getElementById('og-image').setAttribute('content', baseUrl);
+            document.getElementById('og-image-alt').setAttribute('content', description);
+            document.getElementById('og-url').setAttribute('content', currentUrl);
+
+            // Twitter meta tag'ları güncelle
+            document.getElementById('twitter-title').setAttribute('content', shortText);
+            document.getElementById('twitter-description').setAttribute('content', description);
+            document.getElementById('twitter-image').setAttribute('content', baseUrl);
+            document.getElementById('twitter-image-alt').setAttribute('content', description);
+
+            // Favicon olarak da ayarla
+            let favicon = document.querySelector('link[rel="icon"]');
+            if (!favicon) {
+                favicon = document.createElement('link');
+                favicon.rel = 'icon';
+                document.head.appendChild(favicon);
+            }
+            favicon.href = imageDataUrl;
+        }
+
+        // Önce mevcut resim.png'yi yüklemeye çalış
+        baseImage.onload = function () {
+            console.log('Mevcut resim.png yüklendi, üzerine metin yazılıyor...');
+            drawImageWithText(baseImage);
+            setTimeout(updateMetaTags, 100);
+        };
+
+        baseImage.onerror = function () {
+            console.log('resim.png bulunamadı, gradient arka plan kullanılıyor...');
+            drawImageWithText();
+            setTimeout(updateMetaTags, 100);
+        };
+
+        // resim.png dosyasını yüklemeye çalış
+        const baseUrl = window.location.origin + window.location.pathname.replace('.html', '');
+        baseImage.src = baseUrl;
+
+        // Eğer 2 saniye içinde yüklenmezse gradient kullan
+        setTimeout(() => {
+            if (canvas.style.display === 'none') {
+                console.log('Resim yüklenemedi, gradient arka plan kullanılıyor...');
+                drawImageWithText();
+                setTimeout(updateMetaTags, 100);
+            }
+        }, 2000);
+    </script>
+</body>
+
+</html>

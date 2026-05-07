@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resim Yönlendirme</title>
+</head>
+<body>
+    <script>
+        // GitHub Pages 404 sayfası - resim isteklerini yönlendir
+        const path = window.location.pathname;
+        const search = window.location.search;
+        
+        // resim.jpg veya resim.png isteklerini yakala
+        if (path.endsWith('/resim.jpg') || path.endsWith('/resim.png')) {
+            // Doğru HTML sayfasına yönlendir
+            const newPath = path.replace('/resim.jpg', '/resim.html').replace('/resim.png', '/resim.png.html');
+            window.location.replace(window.location.origin + newPath + search);
+        } else if (path.includes('resim.')) {
+            // Diğer resim uzantıları için genel yönlendirme
+            window.location.replace(window.location.origin + '/resim.html' + search);
+        } else {
+            // Normal 404 sayfası
+            document.body.innerHTML = `
+                <div style="text-align: center; margin-top: 50px; font-family: Arial, sans-serif;">
+                    <h1>404 - Sayfa Bulunamadı</h1>
+                    <p>Aradığınız sayfa mevcut değil.</p>
+                    <a href="/" style="color: #667eea;">Ana Sayfaya Dön</a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

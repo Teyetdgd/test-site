@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 Meme Oluşturucu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .app-title {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .app-subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-range {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e1e5e9;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .form-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .range-value {
+            font-size: 12px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #e1e5e9;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .canvas-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .canvas {
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .meme-selector {
+            position: relative;
+        }
+
+        .meme-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .meme-dropdown.show {
+            display: block;
+        }
+
+        .meme-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .meme-option:hover {
+            background: #f8f9fa;
+        }
+
+        .meme-option:last-child {
+            border-bottom: none;
+        }
+
+        .meme-thumb {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .meme-info {
+            flex: 1;
+        }
+
+        .meme-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .meme-id {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.1);
+            border-color: #333;
+        }
+
+        .url-result {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .url-result.show {
+            display: block;
+        }
+
+        .text-box {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            position: relative;
+        }
+
+        .text-box.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .text-box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .text-box-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .text-box-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-mini {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-mini.btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-mini.btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-mini:hover {
+            transform: scale(1.05);
+        }
+
+        .text-box-content {
+            display: grid;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .position-preview {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+                height: auto;
+            }
+
+            .sidebar {
+                order: 2;
+            }
+
+            .main-content {
+                order: 1;
+                min-height: 500px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="app-header">
+                <h1 class="app-title">🎨 Meme Oluşturucu</h1>
+                <p class="app-subtitle">Profesyonel meme'ler oluşturun ve paylaşın</p>
+            </div>
+
+            <!-- Template Seçimi -->
+            <div class="section">
+                <h3 class="section-title">🖼️ Arka Plan Seçimi</h3>
+
+                <div class="form-group">
+                    <label class="form-label">Meme Template'leri</label>
+                    <div class="meme-selector">
+                        <input type="text" class="form-input" id="memeSearch"
+                            placeholder="Imgflip'ten popüler meme'ler..." readonly onclick="toggleMemeDropdown()">
+                        <div class="meme-dropdown" id="memeDropdown">
+                            <div class="loading" id="memeLoading">🔄 Popüler meme'ler yükleniyor...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">GitHub Images/ Klasörü</label>
+                    <div class="meme-selector">
+                        <input type="text" class="form-input" id="githubImageSearch"
+                            placeholder="Repo'nuzdaki resimler..." readonly onclick="toggleGithubDropdown()">
+                        <div class="meme-dropdown" id="githubDropdown">
+                            <div class="loading" id="githubLoading">📂 GitHub images/ klasörü taranıyor...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Özel Resim URL</label>
+                    <input type="text" class="form-input" id="customImageUrl"
+                        placeholder="Direkt resim URL'si girin...">
+                </div>
+            </div>
+
+            <!-- Metin Ayarları -->
+            <div class="section">
+                <h3 class="section-title">📝 Metin Ayarları</h3>
+
+                <div class="form-group">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <label class="form-label" style="margin: 0;">Metin Kutuları</label>
+                        <button class="btn btn-secondary btn-small" onclick="addTextBox()" style="padding: 6px 12px;">
+                            ➕ Metin Ekle
+                        </button>
+                    </div>
+                    <div id="textBoxes">
+                        <!-- Metin kutuları buraya dinamik olarak eklenecek -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Font Ailesi</label>
+                    <select class="form-select" id="fontFamily">
+                        <option value="Impact">Impact (Meme Klasiği)</option>
+                        <option value="Arial Black">Arial Black</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Helvetica">Helvetica</option>
+                        <option value="Comic Sans MS">Comic Sans MS</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Courier New">Courier New</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Font Boyutu: <span class="range-value"
+                            id="fontSizeValue">40px</span></label>
+                    <input type="range" class="form-range" id="fontSizeInput" min="20" max="100" value="40">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Font Kalınlığı</label>
+                    <select class="form-select" id="fontWeight">
+                        <option value="900">Çok Kalın (Meme Stili)</option>
+                        <option value="bold">Kalın</option>
+                        <option value="normal">Normal</option>
+                        <option value="lighter">İnce</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Renk Ayarları -->
+            <div class="section">
+                <h3 class="section-title">🎨 Renk & Efekt</h3>
+
+                <div class="form-group">
+                    <label class="form-label">Metin Rengi</label>
+                    <input type="color" class="form-input" id="colorInput" value="#ffffff">
+                    <div class="color-palette">
+                        <div class="color-swatch" style="background: #ffffff" onclick="setColor('#ffffff')"></div>
+                        <div class="color-swatch" style="background: #000000" onclick="setColor('#000000')"></div>
+                        <div class="color-swatch" style="background: #ff0000" onclick="setColor('#ff0000')"></div>
+                        <div class="color-swatch" style="background: #00ff00" onclick="setColor('#00ff00')"></div>
+                        <div class="color-swatch" style="background: #0000ff" onclick="setColor('#0000ff')"></div>
+                        <div class="color-swatch" style="background: #ffff00" onclick="setColor('#ffff00')"></div>
+                        <div class="color-swatch" style="background: #ff00ff" onclick="setColor('#ff00ff')"></div>
+                        <div class="color-swatch" style="background: #00ffff" onclick="setColor('#00ffff')"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Gölge Bulanıklığı: <span class="range-value"
+                            id="shadowBlurValue">4px</span></label>
+                    <input type="range" class="form-range" id="shadowBlur" min="0" max="20" value="4">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Gölge Mesafesi: <span class="range-value"
+                            id="shadowOffsetValue">2px</span></label>
+                    <input type="range" class="form-range" id="shadowOffset" min="0" max="10" value="2">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Gölge Rengi</label>
+                    <input type="color" class="form-input" id="shadowColor" value="#000000">
+                </div>
+            </div>
+
+            <!-- Pozisyon Ayarları -->
+            <div class="section">
+                <h3 class="section-title">📍 Pozisyon</h3>
+
+                <div class="form-group">
+                    <label class="form-label">Yatay (X): <span class="range-value" id="textXValue">400px</span></label>
+                    <input type="range" class="form-range" id="textX" min="0" max="800" value="400">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Dikey (Y): <span class="range-value" id="textYValue">200px</span></label>
+                    <input type="range" class="form-range" id="textY" min="0" max="400" value="200">
+                </div>
+
+                <div class="btn-grid">
+                    <button class="btn btn-secondary btn-small" onclick="setTextPosition('top')">⬆️ Üst</button>
+                    <button class="btn btn-secondary btn-small" onclick="setTextPosition('center')">🎯 Orta</button>
+                    <button class="btn btn-secondary btn-small" onclick="setTextPosition('bottom')">⬇️ Alt</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Canvas Area -->
+            <div class="canvas-container">
+                <canvas id="canvas" class="canvas" width="800" height="400"></canvas>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="downloadImage()">
+                    📥 Görseli İndir
+                </button>
+                <button class="btn btn-primary" onclick="copyUrlToClipboard()">
+                    📋 URL Kopyala
+                </button>
+            </div>
+
+            <!-- Live URL Display -->
+            <div class="url-result show" id="liveUrlResult">
+                <div style="padding: 10px; background: white; border-radius: 8px;">
+                    <div style="color: #666; font-weight: 500; font-size: 11px; margin-bottom: 5px;">🔗 Görsel URL'i:
+                    </div>
+                    <div id="pngUrl"
+                        style="color: #333; font-size: 10px; word-break: break-all; line-height: 1.3; background: #f8f9fa; padding: 6px; border-radius: 4px; border: 1px solid #e1e5e9;">
+                        URL oluşturuluyor...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
