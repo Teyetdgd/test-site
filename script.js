@@ -85,7 +85,7 @@ function initSimpleMeme() {
         const fontSize = fontSizeInput.value;
         const color = encodeURIComponent(colorInput.value);
 
-        const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
+        const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '').replace('dinamik-meme-olusturucu.html', '');
 
         // Temel parametreler
         const baseParams = `text=${text}&size=${fontSize}&color=${color}`;
@@ -93,15 +93,48 @@ function initSimpleMeme() {
         // Sadece PNG URL'ini göster
         const pngUrl = `${baseUrl}resim.png?${baseParams}`;
 
+        // URL'yi global değişkene kaydet
+        window.currentDynamicUrl = pngUrl;
+
         generatedUrl.innerHTML = `
-            <strong>Görsel URL:</strong><br>
-            <div style="margin: 5px 0; padding: 5px; background: white; border-radius: 3px;">
-                <strong>Görsel URL:</strong> ${pngUrl}
+            <div style="margin: 5px 0; padding: 10px; background: white; border-radius: 5px; border: 1px solid #ddd;">
+                <strong style="color: #667eea;">📸 Görsel URL:</strong><br>
+                <code style="word-break: break-all; font-size: 12px; color: #555;">${pngUrl}</code>
             </div>
             <div style="margin-top: 10px; padding: 8px; background: #e3f2fd; border-radius: 3px; font-size: 12px;">
                 💡 <strong>İpucu:</strong> Gelişmiş meme oluşturmak için <a href="create-static-image.html" style="color: #667eea;">Meme Oluşturucu</a>'yu kullanın!
             </div>
         `;
+    }
+}
+
+// Copy dynamic URL to clipboard
+window.copyDynamicUrl = async function() {
+    try {
+        const url = window.currentDynamicUrl;
+        if (!url) {
+            alert('❌ Henüz URL oluşturulmadı!');
+            return;
+        }
+
+        await navigator.clipboard.writeText(url);
+        
+        const button = event.target;
+        const originalText = button.innerHTML;
+        const originalBg = button.style.background;
+        
+        button.innerHTML = '✅ Kopyalandı!';
+        button.style.background = '#28a745';
+        
+        setTimeout(() => {
+            button.innerHTML = originalText;
+            button.style.background = originalBg;
+        }, 2000);
+        
+    } catch (err) {
+        console.error('Kopyalama hatası:', err);
+        const url = window.currentDynamicUrl;
+        prompt('Bu URL\'yi manuel olarak kopyalayın:', url);
     }
 }
 
