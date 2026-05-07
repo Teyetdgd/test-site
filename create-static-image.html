@@ -42,45 +42,6 @@
             overflow-x: hidden;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .sidebar.hidden {
-            transform: translateX(-100%);
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .sidebar-toggle {
-            position: fixed;
-            top: 30px;
-            left: 20px;
-            z-index: 1000;
-            background: rgba(30, 30, 46, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .sidebar-toggle:hover {
-            background: rgba(40, 40, 56, 0.95);
-            transform: scale(1.05);
-        }
-
-        .sidebar-toggle svg {
-            width: 24px;
-            height: 24px;
-            stroke: #e0e0e0;
-        }
-
-        .app-container.sidebar-hidden {
-            grid-template-columns: 1fr;
         }
 
         .main-content {
@@ -487,17 +448,9 @@
 </head>
 
 <body>
-    <!-- Sidebar Toggle Button -->
-    <button class="sidebar-toggle" onclick="toggleSidebar()" id="sidebarToggle">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"/>
-            <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-    </button>
-
-    <div class="app-container" id="appContainer">
+    <div class="app-container">
         <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
+        <div class="sidebar">
             <div class="app-header">
                 <h1 class="app-title">Meme Oluşturucu</h1>
                 <p class="app-subtitle">Profesyonel meme'ler oluşturun ve paylaşın</p>
