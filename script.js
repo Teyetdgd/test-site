@@ -817,6 +817,61 @@ function initAdvancedMeme() {
         }, 'image/png', 1.0);
     }
 
+    // Upload to Imgur (Discord için direkt link)
+    window.uploadToImgur = async function () {
+        try {
+            updatePreview();
+            
+            showNotification('📤 Imgur\'a yükleniyor...', 'info');
+            
+            canvas.toBlob(async (blob) => {
+                const formData = new FormData();
+                formData.append('image', blob);
+                
+                const response = await fetch('https://api.imgur.com/3/image', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Client-ID 546c25a59c58ad7'
+                    },
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const imgurUrl = data.data.link;
+                    
+                    // URL'yi panoya kopyala
+                    await navigator.clipboard.writeText(imgurUrl);
+                    
+                    // Başarı bildirimi
+                    showNotification('✅ Imgur\'a yüklendi! URL kopyalandı.', 'success');
+                    
+                    // URL'yi göster
+                    const urlDisplay = document.getElementById('pngUrl');
+                    if (urlDisplay) {
+                        urlDisplay.innerHTML = `
+                            <div style="margin-bottom: 8px;">
+                                <strong style="color: #28a745;">✅ Imgur URL (Discord için hazır):</strong>
+                            </div>
+                            <a href="${imgurUrl}" target="_blank" style="color: #667eea; word-break: break-all;">
+                                ${imgurUrl}
+                            </a>
+                        `;
+                    }
+                    
+                    // Yeni pencerede aç
+                    window.open(imgurUrl, '_blank');
+                } else {
+                    throw new Error('Imgur upload başarısız');
+                }
+            }, 'image/png', 1.0);
+            
+        } catch (err) {
+            console.error('Imgur upload hatası:', err);
+            showNotification('❌ Imgur\'a yüklenemedi. Lütfen resmi indirip manuel yükleyin.', 'error');
+        }
+    }
+
     // Copy URL to clipboard
     window.copyUrlToClipboard = async function () {
         try {
